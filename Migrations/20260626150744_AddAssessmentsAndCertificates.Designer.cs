@@ -12,8 +12,8 @@ using TmsApi.Data;
 namespace TmsApi.Migrations
 {
     [DbContext(typeof(TmsDbContext))]
-    [Migration("20260619143003_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260626150744_AddAssessmentsAndCertificates")]
+    partial class AddAssessmentsAndCertificates
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

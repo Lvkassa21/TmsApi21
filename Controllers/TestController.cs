@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using TmsApi.Data;
+
 namespace TmsApi.Controllers;
 
 [ApiController]
@@ -11,13 +11,20 @@ public class TestController(TmsDbContext context) : ControllerBase
     [HttpGet("deferred")]
     public IActionResult TestDeferred()
     {
-        Console.WriteLine("\n>>> STEP 1: Building the query object (nodatabase contact)...");
+        Console.WriteLine("\n>>> STEP 1: Building the query object (no database contact)...");
+
         var query = context.Students.Where(s => s.GPA >= 3.0m);
+
         Console.WriteLine(">>> STEP 2: Appending a sorting clause...");
+
         var orderedQuery = query.OrderBy(s => s.Name);
+
         Console.WriteLine(">>> STEP 3: Materializing query into a C# List...");
-        var results = orderedQuery.ToList(); // Execution is triggeredhere
+
+        var results = orderedQuery.ToList(); // Execution is triggered here
+
         Console.WriteLine(">>> STEP 4: Materialization finished. List populated.\n");
+
         return Ok(results);
     }
 
@@ -25,15 +32,18 @@ public class TestController(TmsDbContext context) : ControllerBase
     {
         return gpa >= 3.5m;
     }
+
     [HttpGet("translation-fail")]
     public IActionResult TestTranslationFail()
     {
         Console.WriteLine("\n>>> STEP 1: Running non-translatable query...");
+
         try
         {
             var students = context.Students
-            .Where(s => IsHonorRoll(s.GPA)) // EF Core does not know how to map this method to SQL
-            .ToList();
+                .Where(s => IsHonorRoll(s.GPA)) // cannot be translated to SQL
+                .ToList();
+
             return Ok(students);
         }
         catch (Exception ex)
